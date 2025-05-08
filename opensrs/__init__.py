@@ -234,7 +234,10 @@ class OpenSRS(object):
 
         # create our signature:
         # MD5(MD5(data + private_key)+private_key)
-        signature = hashlib.md5("%s%s" % (hashlib.md5("%s%s" % (data, self.private_key)).hexdigest(), self.private_key)).hexdigest()
+        inner_string = data + self.private_key
+        inner_hash = hashlib.md5(inner_string.encode('utf-8')).hexdigest()
+        outer_string = inner_hash + self.private_key
+        signature = hashlib.md5(outer_string.encode('utf-8')).hexdigest()
 
         # send our post
         try:
